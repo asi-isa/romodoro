@@ -1,4 +1,5 @@
 import { BsFillGearFill } from "react-icons/bs";
+import Countdown from "../components/Countdown";
 
 function App() {
   return (
@@ -19,13 +20,7 @@ function App() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-8 bg-[var(--bg-dark)] w-56 aspect-square rounded-full border-[6px] border-[var(--accent)] shadow-2xl drop-shadow-[-30px_-35px_50px_rgba(255,255,255,0.08)]">
-        <div />
-        <p className="text-[50px] font-semibold">17:33</p>
-        <p className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem]">
-          PAUSE
-        </p>
-      </div>
+      <Countdown minutes={0.1} />
 
       <BsFillGearFill className="text-[var(--color-muted)] hover:text-[var(--color)] cursor-pointer text-xl" />
     </div>
