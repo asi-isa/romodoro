@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+import CircleSVG from "./CircleSVG";
+
 interface CountdownProps {
   minutes: number;
 }
@@ -47,10 +49,9 @@ const Countdown = ({ minutes }: CountdownProps) => {
   }
 
   return (
-    <motion.div
-      layout
-      className="flex flex-col items-center justify-center gap-8 bg-[var(--bg-dark)] w-56 aspect-square rounded-full border-[6px] border-[var(--accent)] shadow-2xl drop-shadow-[-30px_-35px_50px_rgba(255,255,255,0.08)]"
-    >
+    <div className="flex flex-col items-center justify-center gap-8 bg-[var(--bg-dark)] w-56 aspect-square rounded-full shadow-2xl drop-shadow-[-30px_-35px_50px_rgba(255,255,255,0.08)] ">
+      <CircleSVG progress={1 - countdownSeconds / initialSeconds} />
+
       <div />
 
       <motion.p layout className="text-[50px] font-semibold">
@@ -59,22 +60,26 @@ const Countdown = ({ minutes }: CountdownProps) => {
 
       {/* Initial state */}
       {countdownSeconds === initialSeconds && (
-        <p
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
           onClick={onStart}
         >
           START
-        </p>
+        </motion.p>
       )}
 
       {/* intervalID => countdown is running */}
       {intervalID && (
-        <p
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
           onClick={onPause}
         >
           PAUSE
-        </p>
+        </motion.p>
       )}
 
       {/* 
@@ -86,18 +91,22 @@ const Countdown = ({ minutes }: CountdownProps) => {
         countdownSeconds !== initialSeconds &&
         countdownSeconds !== 0 && (
           <>
-            <p
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
               onClick={onStart}
             >
               CONTINUE
-            </p>
-            <p
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
               onClick={onReset}
             >
               RESET
-            </p>
+            </motion.p>
           </>
         )}
 
@@ -110,7 +119,7 @@ const Countdown = ({ minutes }: CountdownProps) => {
           RESET
         </p>
       )}
-    </motion.div>
+    </div>
   );
 };
 
