@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import useSound from "use-sound";
 
 import CircleSVG from "./CircleSVG";
+
+import startAudio from "../assets/sounds/start.mp3";
 
 interface CountdownProps {
   minutes: number;
@@ -20,6 +23,8 @@ const Countdown = ({ minutes }: CountdownProps) => {
   const initialSeconds = minutes * 60;
   const [countdownSeconds, setCountdownSeconds] = useState(initialSeconds);
   const [intervalID, setIntervalID] = useState<NodeJS.Timer>();
+
+  const [playStart] = useSound(startAudio);
 
   useEffect(() => {
     if (countdownSeconds === 0) {
@@ -64,7 +69,10 @@ const Countdown = ({ minutes }: CountdownProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
-          onClick={onStart}
+          onClick={() => {
+            onStart();
+            playStart();
+          }}
         >
           START
         </motion.p>
