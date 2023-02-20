@@ -8,6 +8,7 @@
   --color: rgb(223, 230, 254);
   --color-muted: rgb(86, 91, 114);
   --accent: rgb(239, 120, 114);
+  --accent-20: rgba(239, 120, 114, 0.2);
 }
 
 body {

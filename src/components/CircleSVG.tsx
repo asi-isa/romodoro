@@ -2,11 +2,15 @@ import { motion } from "framer-motion";
 
 interface CircleSVGProps {
   progress: number;
+  animate?: boolean;
+  color?: string;
 }
 
-const CircleSVG = ({ progress }: CircleSVGProps) => {
-  const reverseProgress = 1 - progress;
-
+const CircleSVG = ({
+  progress,
+  animate = true,
+  color = "var(--accent)",
+}: CircleSVGProps) => {
   return (
     <motion.svg
       width="214"
@@ -15,22 +19,22 @@ const CircleSVG = ({ progress }: CircleSVGProps) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`absolute -rotate-90 transition-opacity duration-1000 ${
-        reverseProgress === 0 && "opacity-0"
+        progress === 0 && "opacity-0"
       }`}
     >
       <motion.circle
-        initial={{ pathLength: 1 }}
-        animate={{ pathLength: reverseProgress }}
+        initial={{ pathLength: animate ? 0 : 1 }}
+        animate={{ pathLength: progress }}
         transition={{
           type: "spring",
           damping: 10,
-          stiffness: 2,
-          restDelta: 0.00001,
+          stiffness: 10,
+          restDelta: 0.0001,
         }}
         cx="109"
         cy="109"
         r="106"
-        stroke="var(--accent)"
+        stroke={color}
         strokeWidth="6"
         strokeLinecap="round"
       />

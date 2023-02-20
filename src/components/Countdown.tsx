@@ -21,7 +21,7 @@ const Countdown = ({ minutes }: CountdownProps) => {
   const [intervalID, setIntervalID] = useState<NodeJS.Timer>();
   const [pianoIntervalID, setPianoIntervalID] = useState<NodeJS.Timer>();
 
-  const progress = countdownSeconds / initialSeconds;
+  const progress = (initialSeconds - countdownSeconds) / initialSeconds;
   const countdownHasntStarted = countdownSeconds === initialSeconds;
   const countdownRunning = intervalID ? true : false;
   const countdownFinished = countdownSeconds === 0;
@@ -84,7 +84,8 @@ const Countdown = ({ minutes }: CountdownProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 bg-[var(--bg-dark)] w-56 aspect-square rounded-full shadow-2xl drop-shadow-[-30px_-35px_50px_rgba(255,255,255,0.08)] ">
-      <CircleSVG progress={1 - progress} />
+      <CircleSVG progress={1} animate={false} color="var(--accent-20)" />
+      <CircleSVG progress={progress} />
 
       <div />
 
