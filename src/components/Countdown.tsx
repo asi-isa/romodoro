@@ -14,9 +14,10 @@ interface CountdownProps {
 const ONE_SECOND = 1000;
 
 const Countdown = ({ minutes }: CountdownProps) => {
-  const initialSeconds = minutes * 60;
+  const [initialSeconds, setInitialSeconds] = useState(minutes * 60);
 
   const [countdownSeconds, setCountdownSeconds] = useState(initialSeconds);
+
   const [intervalID, setIntervalID] = useState<NodeJS.Timer>();
   const [pianoIntervalID, setPianoIntervalID] = useState<NodeJS.Timer>();
 
@@ -36,6 +37,12 @@ const Countdown = ({ minutes }: CountdownProps) => {
       pianoSound: [playPiano, { stop: stopPiano, duration: pianoDuration }],
     },
   } = useSounds();
+
+  useEffect(() => {
+    onPause();
+    setInitialSeconds(minutes * 60);
+    setCountdownSeconds(minutes * 60);
+  }, [minutes]);
 
   useEffect(() => {
     if (countdownSeconds === 0) {
