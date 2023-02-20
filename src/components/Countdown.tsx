@@ -5,18 +5,10 @@ import CircleSVG from "./CircleSVG";
 import TxtBtn from "./TxtBtn";
 
 import useSounds from "../hooks/useSounds";
+import { secondsToMinutes } from "../utils";
 
 interface CountdownProps {
   minutes: number;
-}
-
-function secondsToMinutes(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const minutesAsStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-  const seconds = totalSeconds % 60;
-  const secondsAsStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
-
-  return `${minutesAsStr}:${secondsAsStr}`;
 }
 
 const ONE_SECOND = 1000;
