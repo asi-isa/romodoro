@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
+import { DefaultCountdownsKey, DefaultCountdownsType } from "../pages";
 
 interface SwitchProps {
   active: boolean;
@@ -26,36 +27,29 @@ const Switch = ({ title, active, onClick }: SwitchProps) => {
 };
 
 interface CountdownSwitcherProps {
-  setCountdownMinutes: Dispatch<SetStateAction<number>>;
+  currentCountdown: DefaultCountdownsKey;
+  setCurrentCountdown: Dispatch<SetStateAction<DefaultCountdownsKey>>;
 }
 
-const CountdownSwitcher = ({ setCountdownMinutes }: CountdownSwitcherProps) => {
-  const [activeSwitch, setActiveSwitch] = useState(1);
-
+const CountdownSwitcher = ({
+  currentCountdown,
+  setCurrentCountdown,
+}: CountdownSwitcherProps) => {
   return (
     <div className="flex items-center gap-4 bg-[var(--bg-dark)] p-2 rounded-3xl">
       <Switch
-        active={activeSwitch === 1}
-        onClick={() => {
-          setCountdownMinutes(25);
-          setActiveSwitch(1);
-        }}
+        active={currentCountdown === "ROMODORO"}
+        onClick={() => setCurrentCountdown("ROMODORO")}
         title="romodoro"
       />
       <Switch
-        active={activeSwitch === 2}
-        onClick={() => {
-          setCountdownMinutes(5);
-          setActiveSwitch(2);
-        }}
+        active={currentCountdown === "SHORT_BREAK"}
+        onClick={() => setCurrentCountdown("SHORT_BREAK")}
         title="short break"
       />
       <Switch
-        active={activeSwitch === 3}
-        onClick={() => {
-          setCountdownMinutes(15);
-          setActiveSwitch(3);
-        }}
+        active={currentCountdown === "LONG_BREAK"}
+        onClick={() => setCurrentCountdown("LONG_BREAK")}
         title="long break"
       />
     </div>
