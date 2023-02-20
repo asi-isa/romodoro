@@ -1,16 +1,10 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import useSound from "use-sound";
-
 import CircleSVG from "./CircleSVG";
 import TxtBtn from "./TxtBtn";
 
-import startAudio from "../assets/sounds/start.mp3";
-import pauseAudio from "../assets/sounds/pause.mp3";
-import resetAudio from "../assets/sounds/reset.mp3";
-import finishedAudio from "../assets/sounds/finished.mp3";
-import pianoAudio from "../assets/sounds/piano.mp3";
+import useSounds from "../hooks/useSounds";
 
 interface CountdownProps {
   minutes: number;
@@ -41,12 +35,15 @@ const Countdown = ({ minutes }: CountdownProps) => {
   const countdownPaused =
     !countdownRunning && !countdownHasntStarted && !countdownFinished;
 
-  const [playStart] = useSound(startAudio);
-  const [playPause] = useSound(pauseAudio);
-  const [playReset] = useSound(resetAudio);
-  const [playFinished] = useSound(finishedAudio);
-  const [playPiano, { stop: stopPiano, duration: pianoDuration }] =
-    useSound(pianoAudio);
+  const {
+    sounds: {
+      startSound: [playStart],
+      pauseSound: [playPause],
+      finishedSound: [playFinished],
+      resetSound: [playReset],
+      pianoSound: [playPiano, { stop: stopPiano, duration: pianoDuration }],
+    },
+  } = useSounds();
 
   useEffect(() => {
     if (countdownSeconds === 0) {
