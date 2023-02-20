@@ -1,14 +1,16 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+
 import useSound from "use-sound";
 
 import CircleSVG from "./CircleSVG";
+import TxtBtn from "./TxtBtn";
 
 import startAudio from "../assets/sounds/start.mp3";
 import pauseAudio from "../assets/sounds/pause.mp3";
 import resetAudio from "../assets/sounds/reset.mp3";
 import finishedAudio from "../assets/sounds/finished.mp3";
-import TxtBtn from "./TxtBtn";
+import pianoAudio from "../assets/sounds/piano.mp3";
 
 interface CountdownProps {
   minutes: number;
@@ -23,15 +25,28 @@ function secondsToMinutes(totalSeconds: number) {
   return `${minutesAsStr}:${secondsAsStr}`;
 }
 
+const ONE_SECOND = 1000;
+
 const Countdown = ({ minutes }: CountdownProps) => {
   const initialSeconds = minutes * 60;
+
   const [countdownSeconds, setCountdownSeconds] = useState(initialSeconds);
   const [intervalID, setIntervalID] = useState<NodeJS.Timer>();
+  const [pianoIntervalID, setPianoIntervalID] = useState<NodeJS.Timer>();
+
+  const progress = countdownSeconds / initialSeconds;
+  const countdownHasntStarted = countdownSeconds === initialSeconds;
+  const countdownRunning = intervalID ? true : false;
+  const countdownFinished = countdownSeconds === 0;
+  const countdownPaused =
+    !countdownRunning && !countdownHasntStarted && !countdownFinished;
 
   const [playStart] = useSound(startAudio);
   const [playPause] = useSound(pauseAudio);
   const [playReset] = useSound(resetAudio);
   const [playFinished] = useSound(finishedAudio);
+  const [playPiano, { stop: stopPiano, duration: pianoDuration }] =
+    useSound(pianoAudio);
 
   useEffect(() => {
     if (countdownSeconds === 0) {
@@ -40,16 +55,26 @@ const Countdown = ({ minutes }: CountdownProps) => {
     }
   }, [countdownSeconds]);
 
+  useEffect(() => {
+    if (intervalID) {
+      playPiano();
+      setPianoIntervalID(setInterval(() => playPiano(), pianoDuration));
+    } else {
+      stopPiano();
+      clearInterval(pianoIntervalID);
+    }
+  }, [intervalID]);
+
   function onStart() {
     // setInterval waits delay ms before it calls the clb
     // but the countdown should start immediately
     setCountdownSeconds((currentSeconds) => (currentSeconds -= 1));
 
-    const id = setInterval(() => {
-      setCountdownSeconds((currentSeconds) => (currentSeconds -= 1));
-    }, 1000);
-
-    setIntervalID(id);
+    setIntervalID(
+      setInterval(() => {
+        setCountdownSeconds((currentSeconds) => (currentSeconds -= 1));
+      }, ONE_SECOND)
+    );
   }
 
   function onPause() {
@@ -63,7 +88,7 @@ const Countdown = ({ minutes }: CountdownProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 bg-[var(--bg-dark)] w-56 aspect-square rounded-full shadow-2xl drop-shadow-[-30px_-35px_50px_rgba(255,255,255,0.08)] ">
-      <CircleSVG progress={1 - countdownSeconds / initialSeconds} />
+      <CircleSVG progress={1 - progress} />
 
       <div />
 
@@ -71,8 +96,7 @@ const Countdown = ({ minutes }: CountdownProps) => {
         {secondsToMinutes(countdownSeconds)}
       </motion.p>
 
-      {/* Initial state */}
-      {countdownSeconds === initialSeconds && (
+      {countdownHasntStarted && (
         <TxtBtn
           txt="START"
           onClick={() => {
@@ -82,8 +106,7 @@ const Countdown = ({ minutes }: CountdownProps) => {
         />
       )}
 
-      {/* intervalID => countdown is running */}
-      {intervalID && (
+      {countdownRunning && (
         <TxtBtn
           txt="PAUSE"
           onClick={() => {
@@ -93,34 +116,26 @@ const Countdown = ({ minutes }: CountdownProps) => {
         />
       )}
 
-      {/* 
-      When the timer gets paused, the intervalID will be set to undefined.
-      To differentiate from the inital state and the end state, where
-      the intervalID is also be undefined, we have to make extra checks.
-      */}
-      {!intervalID &&
-        countdownSeconds !== initialSeconds &&
-        countdownSeconds !== 0 && (
-          <>
-            <TxtBtn
-              txt="CONTINUE"
-              onClick={() => {
-                onStart();
-                playStart();
-              }}
-            />
-            <TxtBtn
-              txt="RESET"
-              onClick={() => {
-                onReset();
-                playReset();
-              }}
-            />
-          </>
-        )}
+      {countdownPaused && (
+        <>
+          <TxtBtn
+            txt="CONTINUE"
+            onClick={() => {
+              onStart();
+              playStart();
+            }}
+          />
+          <TxtBtn
+            txt="RESET"
+            onClick={() => {
+              onReset();
+              playReset();
+            }}
+          />
+        </>
+      )}
 
-      {/* Time is up */}
-      {countdownSeconds === 0 && (
+      {countdownFinished && (
         <TxtBtn
           txt="RESET"
           onClick={() => {
