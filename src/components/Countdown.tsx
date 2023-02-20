@@ -5,6 +5,10 @@ import useSound from "use-sound";
 import CircleSVG from "./CircleSVG";
 
 import startAudio from "../assets/sounds/start.mp3";
+import pauseAudio from "../assets/sounds/pause.mp3";
+import resetAudio from "../assets/sounds/reset.mp3";
+import finishedAudio from "../assets/sounds/finished.mp3";
+import TxtBtn from "./TxtBtn";
 
 interface CountdownProps {
   minutes: number;
@@ -25,10 +29,14 @@ const Countdown = ({ minutes }: CountdownProps) => {
   const [intervalID, setIntervalID] = useState<NodeJS.Timer>();
 
   const [playStart] = useSound(startAudio);
+  const [playPause] = useSound(pauseAudio);
+  const [playReset] = useSound(resetAudio);
+  const [playFinished] = useSound(finishedAudio);
 
   useEffect(() => {
     if (countdownSeconds === 0) {
       onPause();
+      playFinished();
     }
   }, [countdownSeconds]);
 
@@ -65,29 +73,24 @@ const Countdown = ({ minutes }: CountdownProps) => {
 
       {/* Initial state */}
       {countdownSeconds === initialSeconds && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
+        <TxtBtn
+          txt="START"
           onClick={() => {
             onStart();
             playStart();
           }}
-        >
-          START
-        </motion.p>
+        />
       )}
 
       {/* intervalID => countdown is running */}
       {intervalID && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
-          onClick={onPause}
-        >
-          PAUSE
-        </motion.p>
+        <TxtBtn
+          txt="PAUSE"
+          onClick={() => {
+            onPause();
+            playPause();
+          }}
+        />
       )}
 
       {/* 
@@ -99,33 +102,32 @@ const Countdown = ({ minutes }: CountdownProps) => {
         countdownSeconds !== initialSeconds &&
         countdownSeconds !== 0 && (
           <>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
-              onClick={onStart}
-            >
-              CONTINUE
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
-              onClick={onReset}
-            >
-              RESET
-            </motion.p>
+            <TxtBtn
+              txt="CONTINUE"
+              onClick={() => {
+                onStart();
+                playStart();
+              }}
+            />
+            <TxtBtn
+              txt="RESET"
+              onClick={() => {
+                onReset();
+                playReset();
+              }}
+            />
           </>
         )}
 
       {/* Time is up */}
       {countdownSeconds === 0 && (
-        <p
-          className="text-sm font-medium tracking-[.6rem] translate-x-[.3rem] cursor-pointer"
-          onClick={onReset}
-        >
-          RESET
-        </p>
+        <TxtBtn
+          txt="RESET"
+          onClick={() => {
+            onReset();
+            playReset();
+          }}
+        />
       )}
     </div>
   );

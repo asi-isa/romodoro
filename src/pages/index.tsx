@@ -20,7 +20,7 @@ function App() {
         </div>
       </div>
 
-      <Countdown minutes={15} />
+      <Countdown minutes={5} />
 
       <BsFillGearFill className="text-[var(--color-muted)] hover:text-[var(--color)] cursor-pointer text-xl" />
     </div>
